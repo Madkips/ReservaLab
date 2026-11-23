@@ -103,3 +103,18 @@ Universidade Santo Amaro — UNISA
 ## Autor
 
 Felipe Gonçalves Stahlberg
+
+
+## Imagens do sistema
+
+### Tela de login
+![Tela de login do ReservaLab](screenshots/login.png)
+
+### Painel principal
+![Painel principal do ReservaLab](screenshots/painel.png)
+
+### Reserva de laboratório
+![Tela de reserva de laboratório](screenshots/reserva.png)
+
+### Minhas reservas
+![Página de gerenciamento de reservas](screenshots/minhas-reservas.png)
