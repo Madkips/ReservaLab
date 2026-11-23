@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Realizar Reserva - ReservaLab</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>ReservaLab</h1>
+
+        <h2>Realizar Reserva</h2>
+
+        <p>Escolha o laboratório, a data e o horário desejado.</p>
+
+        <form action="{{ url_for('reserva') }}" method="POST">
+
+            <label>Laboratório:</label>
+
+            <select name="laboratorio_id" id="laboratorio_id" required>
+
+                <option value="">Selecione um laboratório</option>
+
+                {% for laboratorio in laboratorios %}
+
+                <option value="{{ laboratorio['id'] }}">
+                    {{ laboratorio['nome'] }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+            <br><br>
+
+            <label>Data da Reserva:</label>
+
+            <input type="date" name="data" id="data" min="{{ hoje }}" required>
+
+            <br><br>
+
+            <label>Horário:</label>
+
+            <select name="horario" id="horario" required>
+
+                <option value="">Selecione um horário</option>
+                <option value="08:00">08:00</option>
+                <option value="09:00">09:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="16:00">16:00</option>
+
+            </select>
+
+            <br><br>
+
+            <button type="submit">Confirmar Reserva</button>
+
+        </form>
+
+        <br>
+
+        <a href="{{ url_for('painel') }}">
+            <button type="button">Voltar ao Painel</button>
+        </a>
+
+    </div>
+
+<script>
+    const laboratorio = document.getElementById("laboratorio_id");
+    const data = document.getElementById("data");
+    const horario = document.getElementById("horario");
+
+
+    async function verificarHorarios() {
+
+        // Limpar os horários bloqueados anteriormente
+        for (let opcao of horario.options) {
+            opcao.disabled = false;
+            opcao.textContent = opcao.value || "Selecione um horário";
+        }
+    // Bloquear horários que já passaram no dia atual
+    const agora = new Date();
+
+    const anoAtual = agora.getFullYear();
+    const mesAtual = String(agora.getMonth() + 1).padStart(2, "0");
+    const diaAtual = String(agora.getDate()).padStart(2, "0");
+
+    const hojeLocal = anoAtual + "-" + mesAtual + "-" + diaAtual;
+
+    const horaAtual = String(agora.getHours()).padStart(2, "0");
+    const minutoAtual = String(agora.getMinutes()).padStart(2, "0");
+
+    const horarioAtual = horaAtual + ":" + minutoAtual;
+
+    if (data.value === hojeLocal) {
+        for (let opcao of horario.options) {
+            if (opcao.value && opcao.value <= horarioAtual) {
+            opcao.disabled = true;
+            opcao.textContent = opcao.value + " - Encerrado";
+            }
+        }
+    }
+        // Verificar se laboratório e data foram selecionados
+        if (!laboratorio.value || !data.value) {
+            horario.value = "";
+            return;
+        }
+
+        try {
+            // Consultar os horários ocupados no Flask
+            const resposta = await fetch(
+                `/horarios_ocupados?laboratorio_id=${encodeURIComponent(laboratorio.value)}&data=${encodeURIComponent(data.value)}`
+            );
+
+            if (!resposta.ok) {
+                throw new Error("Falha ao consultar os horários");
+            }
+
+            const resultado = await resposta.json();
+
+            // Bloquear os horários já reservados
+            for (let opcao of horario.options) {
+
+                if (!opcao.disabled && resultado.horarios_ocupados.includes(opcao.value)) {
+                    opcao.disabled = true;
+                    opcao.textContent = opcao.value + " - Ocupado";
+                }
+            }
+
+            // Limpar a seleção caso o horário esteja ocupado
+            if (horario.selectedOptions[0]?.disabled) {
+                horario.value = "";
+            }
+
+        } catch (erro) {
+            console.error(erro);
+            horario.value = "";
+            alert("Não foi possível consultar os horários. Tente novamente.");
+        }
+    }
+
+    // Executar a consulta quando laboratório ou data mudar
+    laboratorio.addEventListener("change", verificarHorarios);
+    data.addEventListener("change", verificarHorarios);
+</script>
+</body>
+</html>

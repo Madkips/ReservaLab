@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Laboratórios - ReservaLab</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>ReservaLab</h1>
+
+        <h2>Laboratórios Disponíveis</h2>
+
+        <p>Consulte os laboratórios da instituição.</p>
+
+        {% for laboratorio in laboratorios %}
+
+    <h3>{{ laboratorio[1] }}</h3>
+
+    <p>Capacidade: {{ laboratorio[2] }} alunos</p>
+
+{% endfor %}
+
+        <br>
+
+        <a href="{{ url_for('painel') }}">
+            <button>Voltar ao Painel</button>
+        </a>
+
+    </div>
+
+</body>
+</html>

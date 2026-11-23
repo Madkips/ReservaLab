@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Minhas Reservas - ReservaLab</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>ReservaLab</h1>
+
+        <h2>Minhas Reservas</h2>
+
+        <p>Consulte seus agendamentos de laboratórios.</p>
+
+        {% if reservas %}
+
+            {% for reserva in reservas %}
+
+                <div class="reserva-card">
+
+                    <h3>{{ reserva[1] }}</h3>
+
+                    <p>Data: {{ reserva[2] }}</p>
+
+                    <p>Horário: {{ reserva[3] }}</p>
+
+                    <form action="{{ url_for('cancelar_reserva', reserva_id=reserva[0]) }}"
+      method="POST">
+
+    <button type="submit"
+            onclick="return confirm('Tem certeza que deseja cancelar esta reserva?')">
+        Cancelar Reserva
+    </button>
+
+</form>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>Você ainda não possui reservas.</p>
+
+        {% endif %}
+
+        <br>
+
+        <a href="{{ url_for('painel') }}">
+            <button>Voltar ao Painel</button>
+        </a>
+
+    </div>
+
+</body>
+</html>

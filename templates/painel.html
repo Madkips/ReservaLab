@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel do Professor - ReservaLab</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>ReservaLab</h1>
+
+        <h2>Painel do Professor</h2>
+
+        <p>Bem-vindo ao sistema de reservas de laboratórios!</p>
+
+        <h3>O que deseja fazer?</h3>
+
+        <a href="{{ url_for('laboratorios') }}">
+    <button>Consultar Laboratórios</button>
+</a>
+
+        <br><br>
+
+        <a href="{{ url_for('reserva') }}">
+    <button type="button">Realizar Reserva</button>
+</a>
+
+        <br><br>
+
+        <a href="{{ url_for('minhas_reservas') }}">
+    <button type="button">Minhas Reservas</button>
+</a>
+
+<form action="{{ url_for('logout') }}" method="POST">
+    <button type="submit">Sair da Conta</button>
+</form>
+
+    </div>
+
+</body>
+</html>
